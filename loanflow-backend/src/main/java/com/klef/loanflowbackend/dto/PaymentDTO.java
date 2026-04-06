@@ -13,6 +13,7 @@ public class PaymentDTO {
     private Long id;
     private String paymentId;
     private Long loanId;
+    private Long emiScheduleId;
     private String loanCode;
     private String borrowerName;
     private String lenderName;

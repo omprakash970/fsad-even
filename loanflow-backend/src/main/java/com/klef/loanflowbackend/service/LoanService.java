@@ -3,12 +3,14 @@ package com.klef.loanflowbackend.service;
 import com.klef.loanflowbackend.dto.LoanDTO;
 import com.klef.loanflowbackend.entity.*;
 import com.klef.loanflowbackend.repository.BorrowerRepository;
+import com.klef.loanflowbackend.repository.EmiScheduleRepository;
 import com.klef.loanflowbackend.repository.LenderRepository;
 import com.klef.loanflowbackend.repository.LoanRepository;
 import com.klef.loanflowbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ public class LoanService {
     private final BorrowerRepository borrowerRepository;
     private final UserRepository userRepository;
     private final LenderRepository lenderRepository;
+    private final EmiScheduleRepository emiScheduleRepository;
 
     /**
      * Create a new loan application
@@ -80,7 +83,7 @@ public class LoanService {
     }
 
     /**
-     * Approve a loan application
+     * Approve a loan application and generate EMI schedules
      */
     public LoanDTO approveLoan(Long loanId) {
         Loan loan = loanRepository.findById(loanId)
@@ -92,7 +95,69 @@ public class LoanService {
         loan.setUpdatedAt(System.currentTimeMillis());
 
         Loan updated = loanRepository.save(loan);
+
+        // Generate EMI schedules based on loan tenure
+        generateEmiSchedules(updated);
+
         return mapToDTO(updated);
+    }
+
+    /**
+     * Generate EMI schedules for a loan
+     * Calculates monthly EMI using the standard amortization formula
+     */
+    private void generateEmiSchedules(Loan loan) {
+        // Clear any existing EMI schedules for this loan
+        List<EmiSchedule> existing = emiScheduleRepository.findByLoanIdOrderByMonthAsc(loan.getId());
+        emiScheduleRepository.deleteAll(existing);
+
+        // EMI Calculation: EMI = P * r * (1 + r)^n / ((1 + r)^n - 1)
+        // Where: P = Principal, r = monthly interest rate, n = tenure in months
+        double principal = loan.getAmount();
+        double annualRate = loan.getInterestRate() / 100.0;
+        double monthlyRate = annualRate / 12.0;
+        int tenure = loan.getTenure(); // in months
+
+        // Calculate monthly EMI
+        double emiAmount;
+        if (monthlyRate == 0) {
+            emiAmount = principal / tenure;
+        } else {
+            double factor = Math.pow(1 + monthlyRate, tenure);
+            emiAmount = (principal * monthlyRate * factor) / (factor - 1);
+        }
+
+        // Generate EMI schedule for each month
+        double remainingBalance = principal;
+        for (int month = 1; month <= tenure; month++) {
+            double interestAmount = remainingBalance * monthlyRate;
+            double principalAmount = emiAmount - interestAmount;
+            remainingBalance -= principalAmount;
+
+            // Handle rounding for last month
+            if (month == tenure) {
+                principalAmount = principal - (emiAmount * (tenure - 1) -
+                    emiScheduleRepository.findByLoanIdOrderByMonthAsc(loan.getId())
+                        .stream()
+                        .mapToDouble(EmiSchedule::getPrincipal)
+                        .sum());
+                interestAmount = emiAmount - principalAmount;
+                remainingBalance = 0;
+            }
+
+            EmiSchedule schedule = EmiSchedule.builder()
+                    .loan(loan)
+                    .month(month)
+                    .emiAmount(Math.round(emiAmount * 100.0) / 100.0)
+                    .principal(Math.round(principalAmount * 100.0) / 100.0)
+                    .interest(Math.round(interestAmount * 100.0) / 100.0)
+                    .balance(Math.max(0, Math.round(remainingBalance * 100.0) / 100.0))
+                    .status(PaymentStatus.UPCOMING)
+                    .createdAt(System.currentTimeMillis())
+                    .build();
+
+            emiScheduleRepository.save(schedule);
+        }
     }
 
     /**

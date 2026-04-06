@@ -23,6 +23,10 @@ public class Payment {
     @JoinColumn(name = "loan_id", nullable = false)
     private Loan loan;
 
+    @ManyToOne
+    @JoinColumn(name = "emi_schedule_id")
+    private EmiSchedule emiSchedule;
+
     @NotNull(message = "Amount is required")
     private Double amount;
 
