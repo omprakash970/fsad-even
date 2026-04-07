@@ -25,11 +25,17 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final OtpService otpService;
 
     /**
-     * Register a new user
+     * Register a new user - requires verified OTP
      */
     public AuthResponse register(RegisterRequest request) {
+        // Verify OTP before registration
+        if (!otpService.isOtpVerified(request.getEmail())) {
+            throw new IllegalArgumentException("Email not verified. Please verify your OTP first.");
+        }
+
         // Check if email already exists
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
@@ -76,6 +82,9 @@ public class AuthService {
             ));
         }
 
+        // Clean up OTP record after successful registration
+        otpService.cleanupOtp(request.getEmail());
+
         // Generate JWT token
         String token = jwtService.generateToken(savedUser.getEmail());
 
@@ -93,6 +102,7 @@ public class AuthService {
      * Login user
      */
     public AuthResponse login(AuthRequest request) {
+
         // Authenticate user
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

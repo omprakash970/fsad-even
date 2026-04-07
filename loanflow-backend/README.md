@@ -37,7 +37,8 @@ com.klef.loanflowbackend/
 ├── controller/          # REST API endpoints
 │   └── AuthController.java
 ├── service/             # Business logic
-│   └── AuthService.java
+│   ├── AuthService.java
+│   └── RecaptchaService.java
 ├── entity/              # JPA entities
 │   ├── User.java
 │   └── Role.java
@@ -52,7 +53,8 @@ com.klef.loanflowbackend/
 │   ├── JwtAuthenticationFilter.java
 │   └── CustomUserDetailsService.java
 ├── config/              # Spring configuration
-│   └── SecurityConfig.java
+│   ├── SecurityConfig.java
+│   └── WebClientConfig.java
 └── LoanflowBackendApplication.java
 ```
 
@@ -67,6 +69,8 @@ com.klef.loanflowbackend/
 | **ORM** | Spring Data JPA / Hibernate |
 | **Security** | Spring Security 6.x |
 | **Authentication** | JWT (JJWT 0.12.3) |
+| **Bot Protection** | Google reCAPTCHA v3 |
+| **HTTP Client** | Spring WebFlux |
 | **Annotations** | Lombok |
 | **Validation** | Jakarta Validation |
 | **CORS** | Spring Web CORS |
@@ -110,6 +114,11 @@ jwt.secret=your_super_secret_key_which_should_be_long_enough_123456789
 
 # Token expiration (in milliseconds)
 jwt.expiration=86400000
+
+# reCAPTCHA v3 Configuration
+recaptcha.secret.key=YOUR_SECRET_KEY_HERE
+recaptcha.verify.url=https://www.google.com/recaptcha/api/siteverify
+recaptcha.threshold=0.5
 ```
 
 #### 4. Build & Run
@@ -177,7 +186,8 @@ Content-Type: application/json
 
 {
   "email": "john@example.com",
-  "password": "password123"
+  "password": "password123",
+  "recaptchaToken": "eyJhbGciOiJIUzI1NiJ9..."
 }
 ```
 
@@ -191,13 +201,15 @@ Content-Type: application/json
 }
 ```
 
-**Error Response (401 Unauthorized):**
+**Error Response (401 Unauthorized - reCAPTCHA Failed):**
 ```json
 {
   "timestamp": "2026-04-03T10:30:00",
   "status": 401,
   "error": "Unauthorized",
-  "message": "Invalid credentials"
+  "message": "reCAPTCHA verification failed. Please try again."
+}
+```
 }
 ```
 
@@ -290,12 +302,21 @@ CREATE TABLE users (
   - `exp` (expiration) - Expiration timestamp
 - **Signature:** HMAC with secret key
 
+### reCAPTCHA v3 Bot Protection
+- **Type:** Invisible CAPTCHA (no user interaction required)
+- **Verification:** Server-side validation with Google API
+- **Score-based:** Returns confidence score (0.0-1.0)
+- **Threshold:** Configurable (default: 0.5)
+- **Protection:** Prevents automated attacks and brute force attempts
+- **Configuration:** `src/main/java/com/klef/loanflowbackend/service/RecaptchaService.java`
+
 ### Spring Security Configuration
 - **CSRF:** Disabled (stateless API)
 - **Session Management:** STATELESS
 - **CORS:** Enabled for `http://localhost:5173`
 - **Authentication:** JWT + Custom UserDetailsService
 - **Password Encoder:** BCryptPasswordEncoder
+- **reCAPTCHA Verification:** Applied to login endpoint
 
 ---
 
@@ -310,6 +331,7 @@ CREATE TABLE users (
 ### AuthRequest Validation
 - **email**: Required, valid email format
 - **password**: Required, non-blank string
+- **recaptchaToken**: Optional (required for production, can be null in development)
 
 ---
 
@@ -341,15 +363,18 @@ curl -X POST http://localhost:8080/api/auth/register \
   }'
 ```
 
-**Login:**
+**Login with reCAPTCHA:**
 ```bash
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "jane@example.com",
-    "password": "secure123"
+    "password": "secure123",
+    "recaptchaToken": "YOUR_RECAPTCHA_TOKEN_HERE"
   }'
 ```
+
+**Note:** The `recaptchaToken` should be obtained from the frontend reCAPTCHA integration. See [RECAPTCHA_IMPLEMENTATION_GUIDE.md](RECAPTCHA_IMPLEMENTATION_GUIDE.md) for frontend setup.
 
 ### Test Cases
 
@@ -532,6 +557,7 @@ Error: Field validation failed
 
 - ✅ User registration endpoint
 - ✅ User login endpoint
+- ✅ reCAPTCHA v3 bot protection
 - ✅ JWT token generation
 - ✅ JWT token validation
 - ✅ BCrypt password encryption
@@ -563,9 +589,11 @@ Planned features for Phase 2:
 
 ## 📚 Documentation Files
 
+- **README.md** - This file (overview and setup guide)
 - **QUICK_START.md** - Quick setup guide (5 minutes)
 - **PHASE1_COMPLETE.md** - Detailed Phase 1 documentation
-- **README.md** - This file
+- **DATABASE_DOCUMENTATION.md** - Complete database schema, ER model, and diagrams
+- **RECAPTCHA_IMPLEMENTATION_GUIDE.md** - reCAPTCHA setup and integration guide
 
 ---
 
@@ -596,5 +624,6 @@ Last Updated: April 3, 2026
 
 **Happy Coding! 🚀**
 
-#   f i n a l - f s a d  
+#   f i n a l - f s a d 
+ 
  
