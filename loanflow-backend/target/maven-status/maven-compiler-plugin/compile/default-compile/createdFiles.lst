@@ -32,7 +32,6 @@ com\klef\loanflowbackend\dto\LoanDTO.class
 com\klef\loanflowbackend\dto\EmiScheduleDTO.class
 com\klef\loanflowbackend\dto\RiskReportDTO.class
 com\klef\loanflowbackend\repository\PaymentRepository.class
-com\klef\loanflowbackend\email.class
 com\klef\loanflowbackend\entity\LoanOffer.class
 com\klef\loanflowbackend\controller\MarketplaceController$AcceptOfferRequest.class
 com\klef\loanflowbackend\entity\User.class
