@@ -31,6 +31,8 @@ C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowba
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\dto\UpdateUserStatusRequest.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\dto\UserDTO.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\dto\VerifyOtpRequest.java
+C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\email.java
+C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\EmailController.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\entity\Borrower.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\entity\EmiSchedule.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\entity\Lender.java
@@ -67,6 +69,7 @@ C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowba
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\service\AnalyticsService.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\service\AuthService.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\service\BorrowerSummaryService.java
+C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\service\EmailService.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\service\EmiScheduleService.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\service\LoanService.java
 C:\Users\Oppie_549\final-fsad\loanflow-backend\src\main\java\com\klef\loanflowbackend\service\MarketplaceService.java

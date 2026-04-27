@@ -24,6 +24,7 @@ com\klef\loanflowbackend\dto\UserDTO.class
 com\klef\loanflowbackend\entity\RequestStatus.class
 com\klef\loanflowbackend\dto\LoanOfferDTO$LoanOfferDTOBuilder.class
 com\klef\loanflowbackend\entity\Role.class
+com\klef\loanflowbackend\service\EmailService.class
 com\klef\loanflowbackend\entity\EmiSchedule$EmiScheduleBuilder.class
 com\klef\loanflowbackend\dto\LoanRequestDTO$LoanRequestDTOBuilder.class
 com\klef\loanflowbackend\controller\SecurityLogController.class
@@ -31,6 +32,7 @@ com\klef\loanflowbackend\dto\LoanDTO.class
 com\klef\loanflowbackend\dto\EmiScheduleDTO.class
 com\klef\loanflowbackend\dto\RiskReportDTO.class
 com\klef\loanflowbackend\repository\PaymentRepository.class
+com\klef\loanflowbackend\email.class
 com\klef\loanflowbackend\entity\LoanOffer.class
 com\klef\loanflowbackend\controller\MarketplaceController$AcceptOfferRequest.class
 com\klef\loanflowbackend\entity\User.class
@@ -65,6 +67,7 @@ com\klef\loanflowbackend\entity\LoanRequest.class
 com\klef\loanflowbackend\controller\EmiScheduleController.class
 com\klef\loanflowbackend\dto\VerifyOtpRequest$VerifyOtpRequestBuilder.class
 com\klef\loanflowbackend\dto\RegisterRequest.class
+EmailController.class
 com\klef\loanflowbackend\dto\BorrowerSummaryDTO$BorrowerSummaryDTOBuilder.class
 com\klef\loanflowbackend\entity\LoanOffer$LoanOfferBuilder.class
 com\klef\loanflowbackend\dto\LoanDTO$LoanDTOBuilder.class

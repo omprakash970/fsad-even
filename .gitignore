@@ -1,0 +1,71 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+.mvn/timing.properties
+.mvn/timing.properties.lock
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.DS_Store
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+.next/
+out/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Database
+*.sql
+backup.sql
+dump.sql
+
+# Logs
+*.log
+logs/
+
+# Misc
+.classpath
+.c9/
+*.cover
+.hypothesis/
+.pytest_cache/
+instance/
+.webassets-cache
+.scrapy
+.coverage
+htmlcov/
+.tox/
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Build output
+build/
+dist/
+*.egg-info/
+
+# Application-specific
+application.properties
+application-local.properties
+
